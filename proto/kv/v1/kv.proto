@@ -8,13 +8,13 @@ service KeyValueService {
     rpc Put(PutRequest) returns (PutResponse);
     rpc Get(GetRequest) returns (GetResponse);
     rpc Delete(DeleteRequest) returns (DeleteResponse);
+    rpc Watch(WatchRequest) returns (stream WatchEvent);
 }
 
 message PutRequest {
     string key = 1;
     string value = 2;
 }
-
 message PutResponse {}
 
 message GetRequest {
@@ -28,3 +28,18 @@ message DeleteRequest {
   string key = 1;
 }
 message DeleteResponse {}
+
+message WatchRequest {
+    string key = 1;
+}
+
+message WatchEvent {
+    enum EventType {
+        EVENT_TYPE_UNSPECIFIED = 0;
+        EVENT_TYPE_PUT = 1;
+        EVENT_TYPE_DELETE = 2;
+    }
+    EventType type = 1;
+    string key = 2;
+    string value = 3;
+}
