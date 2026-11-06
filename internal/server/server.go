@@ -17,7 +17,9 @@ type KVServer struct {
 }
 
 func New() *KVServer {
-	return &KVServer{}
+	return &KVServer{
+		data: make(map[string]string),
+	}
 }
 
 func (s *KVServer) Put(ctx context.Context, req *kvv1.PutRequest) (*kvv1.PutResponse, error) {
