@@ -11,6 +11,11 @@ import (
 
 type clientNameKey struct{}
 
+func ClientNameFromContext(ctx context.Context) (string, bool) {
+	name, ok := ctx.Value(clientNameKey{}).(string)
+	return name, ok
+}
+
 func authenticate(ctx context.Context, keys map[string]string) (context.Context, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
