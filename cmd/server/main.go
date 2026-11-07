@@ -18,9 +18,11 @@ func main() {
 
 	grpcSrv := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
+			interceptors.UnaryRecovery,
 			interceptors.UnaryLogging,
 		),
-		grpc.StreamInterceptor(
+		grpc.ChainStreamInterceptor(
+			interceptors.StreamRecovery,
 			interceptors.StreamLogging,
 		),
 	)
