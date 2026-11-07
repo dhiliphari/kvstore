@@ -6,6 +6,7 @@ import (
 
 	kvv1 "github.com/dhiliphari/kvstore/gen/kv/v1"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
@@ -90,6 +91,10 @@ func (s *KVServer) Watch(req *kvv1.WatchRequest, stream kvv1.KeyValueService_Wat
 		}
 		s.mu.Unlock()
 	}()
+
+	if err := stream.SendHeader(metadata.MD{}); err != nil {
+		return err
+	}
 
 	for {
 		select {
