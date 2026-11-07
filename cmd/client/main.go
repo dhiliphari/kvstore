@@ -6,6 +6,7 @@ import (
 	"time"
 
 	kvv1 "github.com/dhiliphari/kvstore/gen/kv/v1"
+	"github.com/dhiliphari/kvstore/internal/interceptors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
@@ -13,7 +14,15 @@ import (
 )
 
 func main() {
-	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("localhost:50051",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithChainUnaryInterceptor(
+			interceptors.UnaryClientAuth("dev-secret"),
+		),
+		grpc.WithChainStreamInterceptor(
+			interceptors.StreamClientAuth("dev-secret"),
+		),
+	)
 	if err != nil {
 		log.Fatalf("failed to create client: %v", err)
 	}

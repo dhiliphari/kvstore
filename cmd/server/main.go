@@ -16,14 +16,20 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
+	apiKeys := map[string]string{
+		"dev-secret": "dev-client",
+	}
+
 	grpcSrv := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
 			interceptors.UnaryRecovery,
 			interceptors.UnaryLogging,
+			interceptors.UnaryAuth(apiKeys),
 		),
 		grpc.ChainStreamInterceptor(
 			interceptors.StreamRecovery,
 			interceptors.StreamLogging,
+			interceptors.StreamAuth(apiKeys),
 		),
 	)
 	kvv1.RegisterKeyValueServiceServer(grpcSrv, server.New())
